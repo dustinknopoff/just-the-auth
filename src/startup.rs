@@ -23,7 +23,6 @@ impl Application {
             "{}:{}",
             configuration.application.host, configuration.application.port
         );
-        dbg!(&address);
         let listener = TcpListener::bind(address)?;
         let port = listener.local_addr().unwrap().port();
         let server = run(

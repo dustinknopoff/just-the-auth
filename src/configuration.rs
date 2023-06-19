@@ -2,7 +2,9 @@
 
 pub mod roles {
     use std::collections::HashMap;
+    use chrono::{DateTime, Utc};
     use serde::Deserialize;
+    use uuid::Uuid;
 #[derive(Debug, Clone, PartialEq, Deserialize)]
 pub struct RoleConfiguration {
     pub resources: HashMap<String, ResourceConfiguration>,
@@ -18,12 +20,12 @@ pub struct ResourceConfiguration {
 
 #[derive(Debug, Clone, PartialEq, sqlx::FromRow)]
 pub struct RoleAccess {
-    pub id: i32,
-    pub user_id: i32,
+    pub id: Uuid,
+    pub user_id: Uuid,
     pub role: String,
     pub resource: String,
-    pub time_created: i32,
-    pub time_updated: i32,
+    pub time_created: DateTime<Utc>,
+    pub time_updated: DateTime<Utc>,
 }
 }
 

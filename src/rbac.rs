@@ -1,4 +1,5 @@
 use sqlx::PgPool;
+use uuid::Uuid;
 
 use crate::configuration::roles::{ResourceConfiguration, RoleAccess};
 
@@ -47,10 +48,10 @@ pub async fn has_permission(
 
 /// The unique identifier of a user, used to identify the policies
 /// That apply to a user for a given resource.
-pub struct Actor(i32);
+pub struct Actor(Uuid);
 
-impl AsRef<i32> for Actor {
-    fn as_ref(&self) -> &i32 {
+impl AsRef<Uuid> for Actor {
+    fn as_ref(&self) -> &Uuid {
         &self.0
     }
 }

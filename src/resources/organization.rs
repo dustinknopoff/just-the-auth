@@ -1,16 +1,18 @@
 use crate::{configuration::roles::ResourceConfiguration, rbac};
+use chrono::{DateTime, Utc};
 use rbac::{Resource, Policy, Actor, has_permission};
 use sqlx::{PgPool};
+use uuid::Uuid;
 
 pub struct Organization;
 
 #[derive(Debug, Clone, sqlx::FromRow)]
 pub struct AuthorizedOrganization {
-    id: i32,
+    id: Uuid,
     name: String,
     short_name: String,
-    time_created: i32,
-    time_updated: i32
+    time_created: DateTime<Utc>,
+    time_updated: DateTime<Utc>
 }
 
 #[async_trait::async_trait]
