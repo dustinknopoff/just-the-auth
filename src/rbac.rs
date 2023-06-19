@@ -10,7 +10,7 @@ pub async fn has_permission(
     config: &ResourceConfiguration,
 ) -> bool {
     let role_for_resource =
-        sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1 AND resource = $2;", _for.0, on)
+        sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1 AND resource = $2;", _for.as_ref(), on)
             .fetch_optional(db)
             .await
             .unwrap()
@@ -19,10 +19,10 @@ pub async fn has_permission(
         if let Some(permissions) = config.grants.get(&role) {
             return permissions
                 .iter()
-                .any(|permission| *permission == with.0);
+                .any(|permission| permission == with.as_ref());
         }
     } else if config.extensions.is_some() {
-        let all_user_roles: Vec<RoleAccess> =  sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1;", _for.0)
+        let all_user_roles: Vec<RoleAccess> =  sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1;", _for.as_ref())
             .fetch_all(db)
             .await
             .unwrap();
@@ -37,7 +37,7 @@ pub async fn has_permission(
             {
                 return permissions
                     .iter()
-                    .any(|permission| *permission == with.0);
+                    .any(|permission| permission == with.as_ref());
             }
             false
         });
