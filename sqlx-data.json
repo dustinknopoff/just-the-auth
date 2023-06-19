@@ -6,7 +6,7 @@
         {
           "name": "id",
           "ordinal": 0,
-          "type_info": "Int4"
+          "type_info": "Uuid"
         },
         {
           "name": "name",
@@ -21,12 +21,12 @@
         {
           "name": "time_updated",
           "ordinal": 3,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         },
         {
           "name": "time_created",
           "ordinal": 4,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         }
       ],
       "nullable": [
@@ -38,11 +38,39 @@
       ],
       "parameters": {
         "Left": [
-          "Int4"
+          "Uuid"
         ]
       }
     },
     "query": "SELECT o.* FROM organization o, user_organization uo WHERE uo.organization_id = o.id AND uo.user_id = $1;"
+  },
+  "10d5d1b71d46c4f5fd1e2eebcb8779748ceeccb77dabe116a4366b489bb87a63": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Uuid",
+          "Text",
+          "Timestamptz",
+          "Timestamptz"
+        ]
+      }
+    },
+    "query": "\n        INSERT INTO user_auth\n        VALUES (\n            $1,\n            $2,\n            $3,\n            $4\n        )\n        "
+  },
+  "17ebd24bb9c02beb3779402d1568fb0f2fb53b38eee3afd1546f1839b8fd181c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Left": [
+          "Text",
+          "Uuid"
+        ]
+      }
+    },
+    "query": "\n        UPDATE user_auth\n        SET password_hash = $1\n        WHERE user_id = $2\n        "
   },
   "4906d5b76845f65f0222447bcb39dc0f784dcd70935c36c0f919d0fe6e97160c": {
     "describe": {
@@ -50,12 +78,12 @@
         {
           "name": "id",
           "ordinal": 0,
-          "type_info": "Int4"
+          "type_info": "Uuid"
         },
         {
           "name": "user_id",
           "ordinal": 1,
-          "type_info": "Int4"
+          "type_info": "Uuid"
         },
         {
           "name": "resource",
@@ -70,12 +98,12 @@
         {
           "name": "time_created",
           "ordinal": 4,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         },
         {
           "name": "time_updated",
           "ordinal": 5,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         }
       ],
       "nullable": [
@@ -88,11 +116,37 @@
       ],
       "parameters": {
         "Left": [
-          "Int4"
+          "Uuid"
         ]
       }
     },
     "query": "SELECT * FROM role_access WHERE user_id = $1;"
+  },
+  "bfdb68466b5f13312a2cd843266f123a968755865fd19bf5b7ad53af350c24b2": {
+    "describe": {
+      "columns": [
+        {
+          "name": "user_id",
+          "ordinal": 0,
+          "type_info": "Uuid"
+        },
+        {
+          "name": "password_hash",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Text"
+        ]
+      }
+    },
+    "query": "\n        SELECT user_id, password_hash\n        FROM user_auth, users\n        WHERE users.id = user_auth.user_id\n        AND users.username = $1\n        "
   },
   "f1d33faa552c173cde2bf84b99a24908305805947bc5ac85539685f708304442": {
     "describe": {
@@ -100,12 +154,12 @@
         {
           "name": "id",
           "ordinal": 0,
-          "type_info": "Int4"
+          "type_info": "Uuid"
         },
         {
           "name": "user_id",
           "ordinal": 1,
-          "type_info": "Int4"
+          "type_info": "Uuid"
         },
         {
           "name": "resource",
@@ -120,12 +174,12 @@
         {
           "name": "time_created",
           "ordinal": 4,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         },
         {
           "name": "time_updated",
           "ordinal": 5,
-          "type_info": "Int4"
+          "type_info": "Timestamptz"
         }
       ],
       "nullable": [
@@ -138,7 +192,7 @@
       ],
       "parameters": {
         "Left": [
-          "Int4",
+          "Uuid",
           "Text"
         ]
       }
