@@ -1,0 +1,39 @@
+[package]
+name = "just-the-auth"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+path = "src/main.rs"
+name = "just_the_auth"
+
+[dependencies]
+anyhow = "1.0"
+argon2 = { version = "0.5.0", features = ["std"] }
+async-trait = "0.1"
+axum = { version = "0.6.18", features=["tracing"]}
+base64 = "0.21"
+config = { version = "0.13"}
+hyper = "0.14.26"
+log = "0.4"
+secrecy = { version = "0.8", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
+serde-aux = "4.2"
+serde_json = "1.0"
+sqlx = { version = "0.6", features = ["runtime-tokio-rustls", "macros", "postgres", "uuid", "chrono", "migrate", "offline"] }
+thiserror = "1.0"
+tokio = { version = "1.28", features = ["macros", "rt-multi-thread"] }
+tower = "0.4.13"
+tower-http = { version = "0.4", features = ["trace", "request-id", "util"] }
+tracing = "0.1"
+tracing-bunyan-formatter = "0.3"
+tracing-log = "0.1"
+tracing-subscriber = { version = "0.3", features = ["registry", "env-filter"] }
+uuid = { version = "1.3", features = ["serde", "v4"] }
+validator = "0.16"
+
+[profile.dev.package.sqlx-macros]
+opt-level = 3

@@ -1,0 +1,148 @@
+{
+  "db": "PostgreSQL",
+  "0ad8e1236075022dd8c9299b46eb871d8daaa02a48d6a6673c202ec9a07d2452": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "name",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "short_name",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "time_updated",
+          "ordinal": 3,
+          "type_info": "Int4"
+        },
+        {
+          "name": "time_created",
+          "ordinal": 4,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT o.* FROM organization o, user_organization uo WHERE uo.organization_id = o.id AND uo.user_id = $1;"
+  },
+  "4906d5b76845f65f0222447bcb39dc0f784dcd70935c36c0f919d0fe6e97160c": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "resource",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "role",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "time_created",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "time_updated",
+          "ordinal": 5,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4"
+        ]
+      }
+    },
+    "query": "SELECT * FROM role_access WHERE user_id = $1;"
+  },
+  "f1d33faa552c173cde2bf84b99a24908305805947bc5ac85539685f708304442": {
+    "describe": {
+      "columns": [
+        {
+          "name": "id",
+          "ordinal": 0,
+          "type_info": "Int4"
+        },
+        {
+          "name": "user_id",
+          "ordinal": 1,
+          "type_info": "Int4"
+        },
+        {
+          "name": "resource",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "role",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "time_created",
+          "ordinal": 4,
+          "type_info": "Int4"
+        },
+        {
+          "name": "time_updated",
+          "ordinal": 5,
+          "type_info": "Int4"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Left": [
+          "Int4",
+          "Text"
+        ]
+      }
+    },
+    "query": "SELECT * FROM role_access WHERE user_id = $1 AND resource = $2;"
+  }
+}

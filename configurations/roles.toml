@@ -1,0 +1,60 @@
+[resources.Organization]
+roles = ["owner", "member"]
+permissions = [
+    "read",
+    "create_repos",
+    "list_repos",
+    "create_role_assignments",
+    "list_role_assignments",
+    "update_role_assignments",
+    "delete_role_assignments",
+]
+
+[resources.Organization.grants]
+owner = [
+    "read",
+    "create_repos",
+    "list_repos",
+    "create_role_assignments",
+    "list_role_assignments",
+    "update_role_assignments",
+    "delete_role_assignments",
+]
+member =  ["read", "list_role_assigments", "list_repos"]
+
+[resources.Repository]
+roles = ["admin", "maintainer", "reader"]
+permissions = [
+    "read",
+    "create_issues",
+    "list_issues",
+    "create_role_assignments",
+    "list_role_assignments",
+    "update_role_assignments",
+    "delete_role_assignments"
+]
+
+[resources.Repository.grants]
+admin = [
+    "read",
+    "create_issues",
+    "list_issues",
+    "create_role_assignments",
+    "list_role_assignments",
+    "update_role_assignments",
+    "delete_role_assignments"
+]
+maintainer = [
+    "read",
+    "create_issues",
+    "list_issues",
+    "create_role_assignments",
+    "list_role_assignments",
+    "update_role_assignments",
+    "delete_role_assignments"
+]
+reader = ["read", "create_issues", "list_issued"]
+
+[resources.Repository.extensions.Organization]
+owner = "admin"
+reader = "member"
