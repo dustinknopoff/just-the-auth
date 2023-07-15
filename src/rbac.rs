@@ -1,49 +1,25 @@
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::configuration::roles::{ResourceConfiguration, RoleAccess};
+#[derive(Debug, Clone, sqlx::FromRow)]
+pub struct Role(String);
 
-pub async fn has_permission(
-    _for: &Actor,
-    on: String,
-    with: &Policy,
-    db: &PgPool,
-    config: &ResourceConfiguration,
-) -> bool {
-    let role_for_resource =
-        sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1 AND resource = $2;", _for.as_ref(), on)
+impl Role {
+    pub async fn new(name: String, db: &PgPool) -> Option<Self> {
+        sqlx::query!("SELECT name FROM role WHERE name = $1;", name)
             .fetch_optional(db)
             .await
             .unwrap()
-            .map(|row| row.role);
-    if let Some(role) = role_for_resource {
-        if let Some(permissions) = config.grants.get(&role) {
-            return permissions
-                .iter()
-                .any(|permission| permission == with.as_ref());
-        }
-    } else if config.extensions.is_some() {
-        let all_user_roles: Vec<RoleAccess> =  sqlx::query_as!(RoleAccess, "SELECT * FROM role_access WHERE user_id = $1;", _for.as_ref())
-            .fetch_all(db)
-            .await
-            .unwrap();
-        return all_user_roles.into_iter().any(|role_access| {
-            if let Some(permissions) = config
-                .extensions
-                .as_ref()
-                .unwrap()
-                .get(&role_access.resource)
-                .and_then(|ext| ext.get(&role_access.role))
-                .and_then(|resource_role| config.grants.get(resource_role))
-            {
-                return permissions
-                    .iter()
-                    .any(|permission| permission == with.as_ref());
-            }
-            false
-        });
+            .map(|row| Self(row.name))
     }
-    false
+}
+
+pub async fn has_permission(_for: &Actor, on: Role, db: &PgPool) -> bool {
+    sqlx::query!("SELECT * FROM user_role JOIN role ON user_role.role_id = role.id WHERE user_id = $1 AND role.name = $2;", _for.as_ref(), on.0)
+            .fetch_optional(db)
+            .await
+            .unwrap()
+            .is_some()
 }
 
 /// The unique identifier of a user, used to identify the policies
@@ -56,27 +32,11 @@ impl AsRef<Uuid> for Actor {
     }
 }
 
-/// A policy states
-/// > Is the user granted permission for this action on the associated resource?
-pub struct Policy(String);
-
-impl AsRef<String> for Policy {
-    fn as_ref(&self) -> &String {
-        &self.0
-    }
-}
-
 /// A generic trait for defining RBAC on a DB table
 #[async_trait::async_trait]
 pub trait Resource: Sized {
     type Authorized;
-    async fn is_allowed(
-        &self,
-        config: &ResourceConfiguration,
-        db: &PgPool,
-        policy: Policy,
-        actor: &Actor,
-    ) -> bool;
+    async fn is_allowed(&self, db: &PgPool, role: Role, actor: &Actor) -> bool;
 
     async fn authorize_unchecked(self, db: &PgPool, actor: &Actor) -> Self::Authorized;
 
@@ -88,11 +48,5 @@ pub trait Resource: Sized {
     ///     None
     /// }
     /// ```
-    async fn authorize(
-        self,
-        config: &ResourceConfiguration,
-        db: &PgPool,
-        policy: Policy,
-        actor: Actor,
-    ) -> Option<Self::Authorized>;
+    async fn authorize(self, db: &PgPool, role: Role, actor: Actor) -> Option<Self::Authorized>;
 }

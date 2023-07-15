@@ -1,44 +1,3 @@
-
-
-pub mod roles {
-    use std::collections::HashMap;
-    use chrono::{DateTime, Utc};
-    use serde::Deserialize;
-    use uuid::Uuid;
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct RoleConfiguration {
-    pub resources: HashMap<String, ResourceConfiguration>,
-}
-
-#[derive(Debug, Clone, PartialEq, Deserialize)]
-pub struct ResourceConfiguration {
-    pub roles: Vec<String>,
-    pub permissions: Vec<String>,
-    pub grants: HashMap<String, Vec<String>>,
-    pub extensions: Option<HashMap<String, HashMap<String, String>>>,
-}
-
-#[derive(Debug, Clone, PartialEq, sqlx::FromRow)]
-pub struct RoleAccess {
-    pub id: Uuid,
-    pub user_id: Uuid,
-    pub role: String,
-    pub resource: String,
-    pub time_created: DateTime<Utc>,
-    pub time_updated: DateTime<Utc>,
-}
-}
-
-pub fn get_role_configuration() -> roles::RoleConfiguration {
-       let settings = config::Config::builder()
-        // Add in `./Settings.toml`
-        .add_source(config::File::with_name("configurations/roles.toml"))
-        .build()
-        .unwrap();
-
-    settings.try_deserialize::<roles::RoleConfiguration>().unwrap()
-}
-
 use secrecy::{ExposeSecret, Secret};
 use serde_aux::field_attributes::deserialize_number_from_string;
 use sqlx::postgres::{PgConnectOptions, PgSslMode};
@@ -92,7 +51,6 @@ impl DatabaseSettings {
         options
     }
 }
-
 
 pub fn get_configuration() -> Result<Settings, config::ConfigError> {
     let base_path = std::env::current_dir().expect("Failed to determine the current directory");

@@ -1,11 +1,14 @@
-use std::fmt::{Display, Debug};
+use std::fmt::{Debug, Display};
 
-use just_the_auth::{configuration::{get_configuration}, startup::Application, telemetry::{get_subscriber, init_subscriber}};
+use just_the_auth::{
+    configuration::get_configuration,
+    startup::Application,
+    telemetry::{get_subscriber, init_subscriber},
+};
 use tokio::task::JoinError;
 
-
 #[tokio::main]
-async fn main() -> anyhow::Result<()>{
+async fn main() -> anyhow::Result<()> {
     let subscriber = get_subscriber("justtheauth".into(), "info".into(), std::io::stdout);
     init_subscriber(subscriber);
     let configuration = get_configuration().expect("Failed to read configuration.");
